@@ -29,8 +29,10 @@ module ReadableRecurrences
 
   def self.match_recurrences(dates)
     sorted_dates = sort_dates(dates)
-        
-    match_weekly(sorted_dates)
+    recurrence_schedules = []
+    recurrence_schedules << match_weekly(sorted_dates)
+
+    recurrence_schedules.join(' and ')
   end
 
   def self.match_weekly(sorted_dates)
@@ -38,8 +40,9 @@ module ReadableRecurrences
     sorted_dates.keys.each do |year|
       sorted_dates[year].keys.each do |month|
         sorted_dates[year][month].keys.each do |weekday|
-          if sorted_dates[year][month][weekday].size == days_of_week_count_for_month(month, year, weekday)
-            matches << "All #{Date::DAYNAMES[weekday]}s in #{Date::MONTHNAMES[month]} #{year}"
+          dates = sorted_dates[year][month][weekday]
+          if dates.size  == days_of_week_count_for_month(month, year, weekday)
+            matches << "Every #{Date::DAYNAMES[weekday]} in #{Date::MONTHNAMES[month]} #{year}"
           end
         end
       end

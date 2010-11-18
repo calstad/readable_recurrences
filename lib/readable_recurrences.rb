@@ -32,7 +32,10 @@ module ReadableRecurrences
     sorted_dates = sort_dates(parsed_dates)
     
     recurrence_schedules = []
-    recurrence_schedules << match_weekly(sorted_dates)
+    recurrence_schedules += match_weekly(sorted_dates)
+    if recurrence_schedules.empty?
+      recurrence_schedules += match_first_and_third(sorted_dates)
+    end
 
     recurrence_schedules.join(' and ')
   end
@@ -53,14 +56,35 @@ module ReadableRecurrences
     matches
   end
 
+  def match_first_and_third(sorted_dates)
+    matches = []
+    sorted_dates.keys.each do |year|
+      sorted_dates[year].keys.each do |month|
+        sorted_month = sort_dates(all_dates_in_month(month, year))[year][month]
+        sorted_dates[year][month].keys.each do |weekday|
+          dates = sorted_dates[year][month][weekday]
+          if (dates.size == 2) && (sorted_month[weekday][0] == dates[0]) && (sorted_month[weekday][2] == dates[1])
+            matches << "First and Third #{Date::DAYNAMES[weekday]} in #{Date::MONTHNAMES[month]} #{year}"
+          end
+        end
+      end
+    end
+    matches
+  end
+
   # Returns the count for a given day of the week in a given month,
   # i.e. there are 5 Tuesdays in November 2011
   def days_of_week_count_for_month(month, year, day_of_week)
-    start_date = Date.civil(year, month, 1)
-    end_date = Date.civil(year, month, -1)
-    whole_month = (start_date..end_date).to_a
+    whole_month = all_dates_in_month(month, year)
     
     sort_dates(whole_month)[year][month][day_of_week].size
   end
-  
+
+  # returns an Array of Date objects for all days in the month
+  def all_dates_in_month(month, year)
+    first_day = Date.civil(year, month, 1)
+    last_day = Date.civil(year, month, -1)
+    
+    (first_day..last_day).to_a
+  end
 end

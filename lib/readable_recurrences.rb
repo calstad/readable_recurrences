@@ -9,8 +9,7 @@ module ReadableRecurrences
 
   #sorts the days of the month into a nested hash based on year then month then
   #day of week
-  def sort_dates(dates)
-    parsed_dates = parse_dates(dates)
+  def sort_dates(parsed_dates)
     date_hasher = lambda {|h, k| h[k] = Hash.new(&date_hasher)}
     
     parsed_dates.inject(Hash.new(&date_hasher)) do |hsh, d|
@@ -28,15 +27,17 @@ module ReadableRecurrences
     dates.inject([]) {|arr, s| arr << Date.parse(s); arr;}
   end
 
-  #matches every week occurrences 
   def match_recurrences(dates)
-    sorted_dates = sort_dates(dates)
+    parsed_dates = parse_dates(dates)
+    sorted_dates = sort_dates(parsed_dates)
+    
     recurrence_schedules = []
     recurrence_schedules << match_weekly(sorted_dates)
 
     recurrence_schedules.join(' and ')
   end
 
+  #matches every week occurrences 
   def match_weekly(sorted_dates)
     matches = []
     sorted_dates.keys.each do |year|
@@ -57,12 +58,9 @@ module ReadableRecurrences
   def days_of_week_count_for_month(month, year, day_of_week)
     start_date = Date.civil(year, month, 1)
     end_date = Date.civil(year, month, -1)
-    count = 0
-    while end_date > start_date
-      count += 1 if start_date.wday == day_of_week
-      start_date = Date.civil(year, month, start_date.day + 1)
-    end
-    count
+    whole_month = (start_date..end_date).to_a
+    
+    sort_dates(whole_month)[year][month][day_of_week].size
   end
   
 end

@@ -71,4 +71,19 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
 
     assert_equal expected_string, @rr.find(string_dates)
   end
+  
+  def test_parses_second_and_fourth_same_week_day_events
+    string_dates = ['2010-11-10', '2010-11-24']
+    expected_string = "Second and Fourth Wednesday in November 2010"
+
+    assert_equal expected_string, @rr.find(string_dates)
+  end
+
+  def test_parses_second_and_fourth_same_week_day_events_over_multiple_months
+    string_dates = ['2010-11-10', '2010-11-24', '2010-12-08', '2010-12-22']
+    expected_string = "Second and Fourth Wednesday in November 2010 and Second and Fourth Wednesday in December 2010"
+
+    assert_equal expected_string, @rr.find(string_dates)
+  end
+
 end

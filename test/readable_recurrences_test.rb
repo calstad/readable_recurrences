@@ -13,7 +13,7 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
     parsed_dates = @rr.parse_dates(string_dates)
     
     assert_equal parsed_dates.size, string_dates.size
-    parsed_dates.each {|pd| assert_instance_of Date, pd}
+    parsed_dates.each {|pd| assert_instance_ogf Date, pd}
   end
 
   def test_sorts_dates_into_a_hash
@@ -38,12 +38,7 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
     assert_equal expected_hash, @rr.sort_dates(parsed_dates)
   end
 
-  def test_calculates_number_of_day_in_month
-    assert_equal 5, @rr.days_of_week_count_for_month(11,2010,1)
-    assert_equal 4, @rr.days_of_week_count_for_month(11,2010,0)
-  end
-
-  def test_parses_weekly_events_that_are_on_the_same_week_day
+ def test_parses_weekly_events_that_are_on_the_same_week_day
     string_dates = ['2010-11-01', '2010-11-08', '2010-11-15',
                     '2010-11-22', '2010-11-29']
     assert_equal "Every Monday in November 2010", @rr.find(string_dates)

@@ -6,39 +6,8 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
   def setup
     @rr = ReadableRecurrences
   end
-  
-  def test_converts_strings_into_date_objects
-    string_dates = ['2010-11-01', '2010-11-08', '2010-11-15',
-                    '2010-11-22', '2010-11-29']
-    parsed_dates = @rr.parse_dates(string_dates)
-    
-    assert_equal parsed_dates.size, string_dates.size
-    parsed_dates.each {|pd| assert_instance_ogf Date, pd}
-  end
 
-  def test_sorts_dates_into_a_hash
-    string_dates = ['2010-11-01', '2010-11-08', '2010-11-15',
-                    '2010-11-22', '2010-11-29']
-    parsed_dates = @rr.parse_dates(string_dates)
-    expected_hash = {2010 => {11 =>{1 =>[1,8,15,22,29]}}}
-
-    assert_equal expected_hash, @rr.sort_dates(parsed_dates)
-  end
-  
-  def test_sorts_dates_spanning_multiple_years_into_a_hash
-    string_dates = ['2010-11-01', '2010-12-06', '2011-01-03']
-    expected_hash = {
-      2010 => {
-        11 =>{1 => [1]},
-        12 => {1 => [6]}},
-      2011 => {
-        1 => { 1 => [3]}}}
-    parsed_dates = @rr.parse_dates(string_dates)
-    
-    assert_equal expected_hash, @rr.sort_dates(parsed_dates)
-  end
-
- def test_parses_weekly_events_that_are_on_the_same_week_day
+  def test_parses_weekly_events_that_are_on_the_same_week_day
     string_dates = ['2010-11-01', '2010-11-08', '2010-11-15',
                     '2010-11-22', '2010-11-29']
     assert_equal "Every Monday in November 2010", @rr.find(string_dates)
@@ -50,7 +19,7 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
                     '2010-12-27']
     expected_string = "Every Monday in November 2010 and Every Monday in December 2010"
     assert_equal expected_string, @rr.find(string_dates)
-    
+
   end
 
   def test_parses_first_and_third_same_week_day_events
@@ -66,7 +35,7 @@ class ReadableRecurrencesTest < Test::Unit::TestCase
 
     assert_equal expected_string, @rr.find(string_dates)
   end
-  
+
   def test_parses_second_and_fourth_same_week_day_events
     string_dates = ['2010-11-10', '2010-11-24']
     expected_string = "Second and Fourth Wednesday in November 2010"
